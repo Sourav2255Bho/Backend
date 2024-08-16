@@ -59,8 +59,8 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private JobStatus status= JobStatus.POSTED;
     
-//    @ElementCollection
-//    @CollectionTable(name = "image_list", joinColumns = @JoinColumn(name = "job_id"))
-//    @Column(name = "image")
-//    private List<String> images = new ArrayList<String>();
+    @ElementCollection
+    @CollectionTable(name = "image_list", joinColumns = @JoinColumn(name = "job_id"))
+    @Column(name = "job_images")
+    private List<String> jobImages = new ArrayList<String>();
 }

@@ -1,15 +1,20 @@
 package com.seeker.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeker.dto.job.JobDTO;
 import com.seeker.dto.remaining.AddressDTO;
@@ -42,8 +47,8 @@ public class JobController {
 //	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<?> createJob(@Valid @RequestBody JobDTO jobDto, HttpServletResponse response) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(jobSer.createJob(jobDto, response));
+	public ResponseEntity<?> createJob(@Valid @ModelAttribute JobDTO jobDto, @RequestParam("photos") List<MultipartFile> photos, HttpServletResponse response) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(jobSer.createJob(jobDto, photos, response));
 	}
 	
 	@GetMapping("/{id}")

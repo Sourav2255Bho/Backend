@@ -9,12 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeker.dto.user.LoginDTO;
 import com.seeker.dto.user.RegisterDTO;
@@ -51,8 +54,8 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterDTO userDto, HttpServletResponse response) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(userSer.registerUser(userDto, response));
+	public ResponseEntity<?> registerUser(@Valid @ModelAttribute RegisterDTO userDto,@RequestParam MultipartFile photo, HttpServletResponse response) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(userSer.registerUser(userDto, photo, response));
 	}
 
 	@PostMapping("/login")
@@ -71,7 +74,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(userSer.deleteUser(email));
 	}
 
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public ResponseEntity<?> logout(HttpServletResponse response) {
 		// Invalidate the JWT cookie by setting its max age to 0
 		Cookie cookie = new Cookie("JWT_TOKEN", null);

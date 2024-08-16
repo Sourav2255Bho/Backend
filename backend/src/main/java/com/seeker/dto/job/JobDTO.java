@@ -41,4 +41,6 @@ public class JobDTO {
 	private List<RegisterDTO> appliedUsers;
 
 	private JobStatus status;
+	
+	private List<String> jobImages;
 }

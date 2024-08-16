@@ -1,6 +1,7 @@
 package com.seeker.dto.job;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.seeker.dto.remaining.AddressDTO;
 import com.seeker.dto.user.RegisterDTO;
@@ -37,4 +38,6 @@ public class JobAppliedDTO {
 //	private List<RegisterDTO> appliedUsers;
 
 	private JobStatus status;
+	
+	private List<String> jobImages;
 }

@@ -2,6 +2,7 @@ package com.seeker.dto.user;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seeker.dto.job.JobAppliedDTO;
 import com.seeker.dto.job.JobPostedDTO;
 import com.seeker.dto.remaining.AddressDTO;
@@ -33,7 +34,8 @@ public class MeDTO {
 	private String email;
 
 	private String name;
-
+	
+	@JsonIgnore
 	private String password;
 	
 	private String aadhar;
@@ -58,6 +60,8 @@ public class MeDTO {
 	private Double wallet;
 	
 	private List<TransactionDTO> transactions;
+	
+	private String photo;
     
     
 

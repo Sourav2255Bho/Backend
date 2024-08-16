@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeker.config.JwtService;
 import com.seeker.dto.job.JobAppliedDTO;
@@ -59,6 +60,9 @@ public class UserServices {
 	@Autowired
 	private PasswordEncoder passwordEncoder; 
 	
+	@Autowired
+	private AwsS3Service awsS3SService;
+	
 	
 	// Admin ==> List of all Users  
 	public List<RegisterDTO> getAllUsers(){
@@ -74,7 +78,7 @@ public class UserServices {
 	}
 
 	// Create User
-	public Object registerUser(RegisterDTO RegisterDTO,  HttpServletResponse response) {
+	public Object registerUser(RegisterDTO RegisterDTO, MultipartFile image,  HttpServletResponse response) {
 //		public RegisterDTO registerUser(RegisterDTO RegisterDTO,  HttpServletResponse response) {
 //	public RegisterDTO registerUser(RegisterDTO RegisterDTO) {
 		System.out.println(RegisterDTO);
@@ -90,17 +94,20 @@ public class UserServices {
 		User.setRole(Role.USER);
 		if(RegisterDTO.getEmail().equals("ani@gmail.com"))
 			User.setRole(Role.ADMIN);
+		
+		String imgUrl = awsS3SService.saveImageToS3(image);
+		User.setProfilePhoto(imgUrl);
 //		UserRepo.save(User);
 		
 		 // Set JWT in cookie
 //		final UserDetails userDetails = userDetailsService.loadUserByUsername(RegisterDTO.getEmail());
 
-//		String jwt = jwtService.generateToken(User);
-//        Cookie cookie = new Cookie("JWT_TOKEN", jwt);
-//        cookie.setHttpOnly(true);
-//        cookie.setPath("/");
-//        cookie.setMaxAge(60*60*5);
-//        response.addCookie(cookie);
+		String jwt = jwtService.generateToken(User);
+        Cookie cookie = new Cookie("JWT_TOKEN", jwt);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60*60*5);
+        response.addCookie(cookie);
         
 //        return TokenDTO
 //        		.builder()
@@ -167,6 +174,7 @@ public class UserServices {
 		meDTO.setAddress(mapper.map(user.getAddress(), AddressDTO.class));
 		meDTO.setPhoneNumber(user.getPhoneNumber());
 		meDTO.setWallet(user.getWallet());
+		meDTO.setPhoto(user.getProfilePhoto());
 		
 		//List of notifications
 		List<NotificationDTO> notificationDTOs = new ArrayList<NotificationDTO>();

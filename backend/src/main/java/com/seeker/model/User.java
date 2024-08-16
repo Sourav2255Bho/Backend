@@ -45,11 +45,11 @@ public class User implements UserDetails {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Job> jobsApplied = new ArrayList<>();
 
-    @OneToMany(mappedBy = "creator", fetch =  FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Job> jobsPosted = new ArrayList<>();
 
     
-    @OneToMany(mappedBy = "assignedUser", fetch =  FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignedUser", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Job> assignedJobs = new ArrayList<>();
     
     
@@ -70,6 +70,8 @@ public class User implements UserDetails {
     
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<Transaction>(); 
+    
+    private String profilePhoto;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

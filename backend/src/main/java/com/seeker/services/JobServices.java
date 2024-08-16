@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeker.dto.job.JobDTO;
 import com.seeker.dto.remaining.AddressDTO;
@@ -40,6 +42,9 @@ public class JobServices {
 	@Autowired
 	private UserRepository userRepo;
 	
+	@Autowired
+	private AwsS3Service awsS3Service;
+	
 	public Object getAllJobs() {
 		
 		return jobRepo.findAll().stream()
@@ -65,7 +70,7 @@ public class JobServices {
 //	}
 	
 //	Create Job
-	public Object createJob(JobDTO jobDto, HttpServletResponse response) {
+	public Object createJob(JobDTO jobDto, List<MultipartFile> photos, HttpServletResponse response) {
 		User user = null;
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
@@ -73,10 +78,18 @@ public class JobServices {
             user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(() -> new BackendException("User not Found"));
         }
 
+        if(jobDto.getPrice() <= 0)
+        	throw new BackendException("Amount can not be less then zero");
+        
         System.out.println("JOB DTO"+jobDto);
         Job job = mapper.map(jobDto, Job.class);
         System.out.println("JOB MODEL"+job);
         Address Address = job.getJobLocation();
+        
+        for(MultipartFile photo: photos) {
+        	String imageUrl = awsS3Service.saveImageToS3(photo);
+        	job.getJobImages().add(imageUrl);
+        }
 		
 		// Important
 		Address.setJobId(job);
@@ -86,6 +99,8 @@ public class JobServices {
         jobs.add(job); 
         user.setJobsPosted(jobs);
         System.out.println(user.getWallet());
+        if(user.getWallet() < job.getPrice())
+        	throw new BackendException("Insufficient Balance");
         user.setWallet(user.getWallet()-job.getPrice());
         
         Transaction transaction = new Transaction();
@@ -210,6 +225,7 @@ public class JobServices {
         transaction.setJob(job);
         transaction.setTransactionCode(Utils.generateRandomTransactionCode(10));
         transaction.setUser(assignedUser);
+        transaction.setPrice(job.getPrice());
         assignedUser.getTransactions().add(transaction);
         
         
