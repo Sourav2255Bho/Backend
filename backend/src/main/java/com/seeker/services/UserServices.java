@@ -95,8 +95,12 @@ public class UserServices {
 		if(RegisterDTO.getEmail().equals("ani@gmail.com"))
 			User.setRole(Role.ADMIN);
 		
-		String imgUrl = awsS3SService.saveImageToS3(image);
-		User.setProfilePhoto(imgUrl);
+		if(image != null && !image.isEmpty()) {
+			String imgUrl = awsS3SService.saveImageToS3(image);
+			User.setProfilePhoto(imgUrl);
+		}else {
+			User.setProfilePhoto("https://seeker-app-images.s3.amazonaws.com/Profile.jpeg");
+		}
 //		UserRepo.save(User);
 		
 		 // Set JWT in cookie

@@ -10,8 +10,6 @@ import com.seeker.dto.remaining.NotificationDTO;
 import com.seeker.dto.remaining.TransactionDTO;
 import com.seeker.model.Role;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

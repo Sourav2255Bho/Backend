@@ -1,7 +1,6 @@
 package com.seeker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -54,8 +53,8 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> registerUser(@Valid @ModelAttribute RegisterDTO userDto,@RequestParam MultipartFile photo, HttpServletResponse response) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(userSer.registerUser(userDto, photo, response));
+	public ResponseEntity<?> registerUser(@Valid @ModelAttribute RegisterDTO userDto,@RequestParam(value = "image", required = false) MultipartFile image, HttpServletResponse response) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(userSer.registerUser(userDto, image, response));
 	}
 
 	@PostMapping("/login")
